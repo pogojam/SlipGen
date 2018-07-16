@@ -3,6 +3,10 @@
   font-family:fantasy;
   display: grid;
   justify-content: center;
+  height: 100vh;
+  grid-template-columns: 1fr 1fr;
+  justify-items: center;
+
 }
 
 .App-logo {

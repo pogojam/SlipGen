@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "ajv": "^6.5.2",
+    "animate.css": "^3.6.1",
     "axios": "^0.18.0",
     "cors": "^2.8.4",
     "express-fileupload": "^0.4.0",
