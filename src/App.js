@@ -5,6 +5,29 @@ import Dropzone from 'react-dropzone'
 import XLSX from 'xlsx'
 import Slip from './Slip';
 import 'animate.css'
+import styled from 'styled-components'
+
+
+const getColor = (props) => {
+  if (props.isDragReject) {
+      return '#c66';
+  }
+  if (props.isDragActive) {    
+      return '#6c6';
+  } 
+  return '#666';
+};
+
+const Container = styled.div`
+  width: 200px;
+  height: 200px;
+  border-width: 2px;
+  border-radius: 5px;
+  border-color: ${props => getColor(props)};
+  border-style: ${props => props.isDragReject || props.isDragActive ? 'solid' : 'dashed'};
+  background-color: ${props => props.isDragReject || props.isDragActive ? '#eee' : ''};
+`;
+
 
 class App extends Component {
 
@@ -38,13 +61,13 @@ handleDrop(file,rejected){
           
           const getColumn =(rowLetter)=>{
           return  Object.entries(workbook.Sheets.Sheet1).filter((val)=>(
-            val[0].slice(0,1) === rowLetter                
+            val[0].slice(0,1) === rowLetter
         )).map(val=>(val[1].v))
           }
 
            this.setState({
             names:getColumn(this.state.column)
-           })          
+           })
       };
       reader.onabort = () => console.log('file reading was aborted');
       reader.onerror = () => console.log('file reading has failed');
@@ -89,8 +112,13 @@ MakeSlips(){
           <h1 >Slip Gen</h1>
             <ColumnSelect column={this.state.column} changeColumn={this.changeColumn.bind(this)} />
             <p>Drag xml file with names in</p>
-              <Dropzone style={dropzoneStyle} onDrop={this.handleDrop.bind(this)} >
-                Drag XML file here
+              <Dropzone style={dropzoneStyle} onDrop={this.handleDrop.bind(this)} >{({ getRootProps, isDragActive, isDragAccept, isDragReject, acceptedFiles })=>{
+                return <Container
+                isDragActive={isDragActive}
+        isDragReject={isDragReject}
+        {...getRootProps()}
+                >Drag XML file here</Container>
+                }}
               </Dropzone>
         </div>
           {console.log(names===Array)}            
