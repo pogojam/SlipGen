@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
-import axio from 'axios'
 import Dropzone from 'react-dropzone'
 import XLSX from 'xlsx'
 import Slip from './Slip';
