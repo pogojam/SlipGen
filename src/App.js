@@ -13,13 +13,18 @@ class App extends Component {
     super(props)
   
     this.state = {
-       test:'test'
+       test:'test',
+       column:'A'
     }
   }
-  
 
+  changeColumn(event){
 
-
+    
+    this.setState({
+      column:event.target.value
+    })
+  }
 
 handleDrop(file,rejected){
 
@@ -31,22 +36,21 @@ handleDrop(file,rejected){
           // do whatever you want with the file content
           let data = event.target.result
           const workbook = XLSX.read(data,{type:'binary'})
-                    
-          console.log(this)
+          
+          const getColumn =(rowLetter)=>{
+          return  Object.entries(workbook.Sheets.Sheet1).filter((val)=>(
+            val[0].slice(0,1) === rowLetter                
+        )).map(val=>(val[1].v))
+          }
 
            this.setState({
-            names:workbook.Strings.map((name)=>{
-              return name.t
-            })
-           })
-           
-          
+            names:getColumn(this.state.column)
+           })          
       };
       reader.onabort = () => console.log('file reading was aborted');
       reader.onerror = () => console.log('file reading has failed');
       reader.readAsBinaryString(file[0])
 
-          
     }
     else{
       console.log(rejected)
@@ -54,7 +58,6 @@ handleDrop(file,rejected){
 }
 
 MakeSlips(){
-
   return this.state.names.map((item,id)=>{
     return <Slip key={id} name={item}  />
   })
@@ -85,8 +88,10 @@ MakeSlips(){
       <div className="App">
         <div style={headerStyle} >
           <h1 >Slip Gen</h1>
+            <ColumnSelect column={this.state.column} changeColumn={this.changeColumn.bind(this)} />
+            <p>Drag xml file with names in</p>
               <Dropzone style={dropzoneStyle} onDrop={this.handleDrop.bind(this)} >
-                Drag names here
+                Drag XML file here
               </Dropzone>
         </div>
           {console.log(names===Array)}            
@@ -94,6 +99,14 @@ MakeSlips(){
       </div>
     );
   }
+}
+
+const ColumnSelect = ({changeColumn,column})=>{
+    const columns = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+
+    return <select value={column} onChange={changeColumn} >
+          {columns.split('').map((val)=><option value={val}>{val} </option>)}
+    </select>
 }
 
 export default App;
